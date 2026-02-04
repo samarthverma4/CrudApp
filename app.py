@@ -6,7 +6,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///employee.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
-app.app_context().push()
 
 class Employee(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -14,6 +13,10 @@ class Employee(db.Model):
     email = db.Column(db.String(500), nullable=False)
     def __repr__(self):
         return f"{self.id}-{self.name}"
+
+# Create tables before first request
+with app.app_context():
+    db.create_all()
 
 @app.route("/",methods=['GET','POST'])
 def home():
